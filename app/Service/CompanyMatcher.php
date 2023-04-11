@@ -2,16 +2,19 @@
 
 namespace App\Service;
 
+use Monolog\Logger;
 use PDO;
 
 class CompanyMatcher
 {
     private $db;
+    private $logger;
     private $matches = [];
 
-    public function __construct(\PDO $db) 
+    public function __construct(\PDO $db, Logger $logger)
     {
         $this->db = $db;
+        $this->logger = $logger;
     }
 
     /**
@@ -49,6 +52,7 @@ class CompanyMatcher
             return  true;
 
         }   catch (\PDOException $e) {
+            $this->logger->error("Exception thrown {$e->getMessage()}");
             throw $e;
         }
     }
@@ -85,13 +89,14 @@ class CompanyMatcher
                 assert($match['credits'] > 0);
                 $newCredits = $match['credits'] - 1;
                 if ($newCredits <= 0) {
-                    // logit
+                    $this->logger->info("Company {$match['name']} has run out of credits");
                     $newCredits = 0;
                 }
                 $preparedUpdate->execute(['credits' => $newCredits, 'id' => $match['id']]);
             }
 
         } catch (\PDOException $e) {
+            $this->logger->error("Exception thrown {$e->getMessage()}");
             throw $e;
         }
         

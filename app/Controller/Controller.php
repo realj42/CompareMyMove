@@ -1,10 +1,21 @@
 <?php
 
 namespace App\Controller;
+use Monolog\Level;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 abstract class Controller
 {
     protected $db;
+    protected $logger;
+
+    public function __construct()
+    {
+        $this->logger = new Logger('Compare_my_Move_logger');
+// Now add some handlers
+        $this->logger->pushHandler(new StreamHandler(__DIR__. '/../../logs/cmm_app.log', Level::Debug));
+    }
 
     protected function db()
     {

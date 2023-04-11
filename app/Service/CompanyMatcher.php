@@ -43,7 +43,7 @@ class CompanyMatcher
                           AND cmp.credits > 0";
             $prepared = $this->db->prepare($query, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION] );
             $prepared->execute([
-                'postcode' => '%' . $postcodePrefix . '%',
+                'postcode' => '%"' . $postcodePrefix . '"%',
                 'bedrooms' => '%' . $bedrooms . '%',
                 'surveyType' => $surveyType
                 ]);
